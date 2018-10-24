@@ -8,12 +8,14 @@ https://pythonprogramming.net/how-to-embed-matplotlib-graph-tkinter-gui/
 https://pythonprogramming.net/python-matplotlib-live-updating-graphs/
 """
 
+
 import math
 import matplotlib
 from matplotlib import style
 import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+from matplotlib.ticker import MaxNLocator
 import time
 from tkinter import Tk, Canvas, Label, Entry, Button, ALL
 from tkinter import messagebox
@@ -22,6 +24,7 @@ from tkinter import messagebox
 matplotlib.use("TkAgg")
 style.use('ggplot')
 DELAY = 0.03  # canvas refresh rate
+ROTATE_RATE = 3  # how fast bubbles rotate (in degrees per refresh)
 DPI = 100
 
 
@@ -60,20 +63,17 @@ class CircularConv:
         self.entry2 = Entry(self.root)
         self.label3 = Label(self.root, text='Number of Padded Zeros')
         self.entry3 = Entry(self.root)
-        self.button1 = Button(self.root, text='Convolute')
-        self.button2 = Button(self.root, text='Reset')
-        self.button3 = Button(self.root, text='Step')
+        self.button1 = Button(self.root, text='Convolute', command=self.addSignal)
+        self.button2 = Button(self.root, text='Reset', command=self.reset)
+        self.button3 = Button(self.root, text='Step', command=self.nextStep)
         self.fig = Figure(figsize=(self.figSize, self.figSize), dpi=DPI)
         self.graph = FigureCanvasTkAgg(self.fig, self.root)
 
         # add plot
         self.plt = self.fig.add_subplot(111)
+        self.plt.set_xlabel('Time, samples')
+        self.plt.set_ylabel('CC output')
         self.graph.draw()
-
-        # bind left mouse click to functions
-        self.button1.bind('<Button-1>', self.addSignal)
-        self.button2.bind('<Button-1>', self.reset)
-        self.button3.bind('<Button-1>', self.nextStep)
 
         # position widgets in layout
         self.canvas.grid(row=0, column=0, rowspan=20)
@@ -89,20 +89,22 @@ class CircularConv:
         self.graph.get_tk_widget().grid(row=0, column=2, rowspan=20)
 
     # adds signals to the canvas
-    def addSignal(self, event):
+    def addSignal(self):
         if not self.entry1.get() or not self.entry2.get():
             messagebox.showerror('Error', 'Please input both signals!')
             return
+
+        self.reset()  # clear everything
 
         # get signal from entries
         self.signal1 = self.entry1.get().split(',')
         self.signal2 = self.entry2.get().split(',')
 
         if len(self.signal1) != len(self.signal2):
-            messagebox.showerror('Error',
-                                 'Make sure the signals have the same length!')
             self.signal1 = []
             self.signal2 = []
+            messagebox.showerror('Error',
+                                 'Make sure the signals have the same length!')
             return
 
         # pad the zeros
@@ -124,7 +126,7 @@ class CircularConv:
         self.drawShapes()
 
     # clear and reset the canvas
-    def reset(self, event):
+    def reset(self):
         self.canvas.delete(ALL)
         self.canvas.update()
         self.signal1 = []
@@ -137,13 +139,10 @@ class CircularConv:
         self.plt.clear()
 
     # go onto the next step in circular convolution
-    def nextStep(self, event):
-        if self.count < len(self.signal1)-1:
+    def nextStep(self):
+        if len(self.signal1) != 0:
             self.rotateBubble(-self.spacing)
             self.count += 1
-        else:
-            messagebox.showinfo('Info',
-                                'Convolution Complete! Hit reset to restart.')
 
     # updates the plot
     def animate(self, i):
@@ -156,11 +155,16 @@ class CircularConv:
             self.result.append(tmp)
             self.plt.clear()
             self.plt.stem(range(len(self.result)), self.result)
+            # use integer ticks
+            ax = self.fig.gca()
+            if self.count != 0:
+                ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+            ax.yaxis.set_major_locator(MaxNLocator(integer=True))
             self.prevCount = self.count
 
     # rotates the bubbles by a certain angle
     def rotateBubble(self, angle):
-        step = -2 if angle <= 0 else 2
+        step = -ROTATE_RATE if angle <= 0 else ROTATE_RATE
         finalAngle = self.angle + angle
 
         while abs(self.angle) < abs(finalAngle):
