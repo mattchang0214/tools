@@ -8,7 +8,6 @@ https://pythonprogramming.net/how-to-embed-matplotlib-graph-tkinter-gui/
 https://pythonprogramming.net/python-matplotlib-live-updating-graphs/
 """
 
-
 import math
 import matplotlib
 from matplotlib import style
@@ -22,7 +21,7 @@ from tkinter import messagebox
 
 
 matplotlib.use("TkAgg")
-style.use('ggplot')
+style.use('ggplot')  # use ggplot style
 DELAY = 0.03  # canvas refresh rate
 ROTATE_RATE = 3  # how fast bubbles rotate (in degrees per refresh)
 DPI = 100
@@ -91,6 +90,7 @@ class CircularConv:
     # adds signals to the canvas
     def addSignal(self):
         if not self.entry1.get() or not self.entry2.get():
+            # note: this method doesn't return till the messagebox is closed
             messagebox.showerror('Error', 'Please input both signals!')
             return
 
@@ -147,9 +147,10 @@ class CircularConv:
     # updates the plot
     def animate(self, i):
         length = len(self.signal1)
-
+        # update plot only when you go to the next step
         if self.prevCount != self.count and length > 0:
             tmp = 0
+            # compute circular convolution
             for j in range(len(self.signal1)):
                 tmp += int(self.signal1[j][2])*int(self.signal2[(self.count-j) % length][2])
             self.result.append(tmp)
@@ -157,8 +158,7 @@ class CircularConv:
             self.plt.stem(range(len(self.result)), self.result)
             # use integer ticks
             ax = self.fig.gca()
-            if self.count != 0:
-                ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+            ax.xaxis.set_major_locator(MaxNLocator(integer=True))
             ax.yaxis.set_major_locator(MaxNLocator(integer=True))
             self.prevCount = self.count
 
