@@ -49,6 +49,6 @@ sudo reboot
 
 ## Sources
 * [Sending emails using `smtplib`](https://myhydropi.com/send-email-with-a-raspberry-pi-and-python)
-* [Get IP address of the Pi](https://circuitdigest.com/microcontroller-projects/display-ip-address-of-raspberry-pi)
+* [Getting IP address of the Pi](https://circuitdigest.com/microcontroller-projects/display-ip-address-of-raspberry-pi)
 * [Running a script on startup](https://www.dexterindustries.com/howto/run-a-program-on-your-raspberry-pi-at-startup/)
 * [Running a script as a systemd service](https://unix.stackexchange.com/a/401080)
