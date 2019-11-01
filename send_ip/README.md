@@ -9,7 +9,7 @@ Copy `send_ip.py` and `send_ip.sh` to the `/home/pi/` directory. You need to hav
 It's easy to set one up using Gmail, but I used [Mailgun](https://simpleisbetterthancomplex.com/tutorial/2017/05/27/how-to-configure-mailgun-to-send-emails-in-a-django-app.html) 
 just because I didn't want to mess with any Gmail settings.
 
-Next, open a service file to be run at startup to the systemd directory using the following line
+Next, open a service file in the systemd directory using the following line
 ```
 sudo geany /etc/systemd/system/send_ip.service
 ```
