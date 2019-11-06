@@ -35,12 +35,12 @@ WantedBy=multi-user.target
 
 Enable and test the service
 ```
-sudo systemctl enable my_script.service
-sudo systemctl start my_script.service
+sudo systemctl enable send_ip.service
+sudo systemctl start send_ip.service
 ```
 The Python script should have executed. Check the status of the service to make sure everything's ok
 ```
-sudo systemctl status my_script.service
+sudo systemctl status send_ip.service
 ```
 Reboot the Pi and your custom service should run
 ```
