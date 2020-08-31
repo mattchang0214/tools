@@ -1,8 +1,6 @@
 # **Sending your Raspberry Pi's IP address to your email on startup**
-Every once in a while the IP address of my Raspberry Pi changes. Trying to SSH or VNC into the Pi when this happens 
-is quite inconvenient, as I'm used to running the Pi headless, and I would need to go through the hassle of finding a 
-screen and keyboard/mouse just to get the IP address. It's not very easy (if it's even allowed) to set up static IP on 
-university network, so I thought the best way to avoid all the trouble is to have the Pi send me its IP on startup.
+Every once in a while the IP address of my Raspberry Pi changes. Trying to SSH or VNC into the Pi when this happens is quite inconvenient, as I'm used to running the Pi headless: I need to go through the hassle of finding a monitor and keyboard/mouse just to get the IP address. It's not very easy (if even allowed) to set up static IP on 
+the university network, so I thought the best way to avoid all the trouble is to have the Pi send me its IP on startup.
 
 ## "Installation"
 Copy `send_ip.py` and `send_ip.sh` to the `/home/pi/` directory. You need to have a SMTP host/server for the Python code to work. 
